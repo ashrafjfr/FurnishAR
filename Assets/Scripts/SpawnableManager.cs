@@ -13,15 +13,21 @@ public class SpawnableManager : MonoBehaviour
     List<ARRaycastHit> hits = new List<ARRaycastHit>();
     [SerializeField]
     public GameObject spawnablePrefab;
+    [SerializeField]
+    Image removeButtonImage;
 
     Camera arCam;
     GameObject spawnedObject;
     bool destroyObjectFlag = false;
 
+    Color clearButtonColor = Color.gray;
+    Color redButtonColor = new Color(1.0f, 0.0f, 0.0f, 0.4f);
+
     private void Start()
     {
         spawnedObject = null;
         arCam = GameObject.Find("AR Camera").GetComponent<Camera>();
+        removeButtonImage.color = clearButtonColor;
     }
 
     private void Update()
@@ -65,7 +71,7 @@ public class SpawnableManager : MonoBehaviour
                 {
                     Destroy(spawnedObject);
                     spawnedObject = null;
-                    destroyObjectFlag = false;
+                    resetDelete();
                 }
                 else
                 {
@@ -92,7 +98,26 @@ public class SpawnableManager : MonoBehaviour
 
     public void RemoveFurniture()
     {
+        if (destroyObjectFlag)
+        {
+            resetDelete();
+        }
+        else
+        {
+            setDelete();
+        }
+    }
+
+    public void setDelete()
+    {
         destroyObjectFlag = true;
+        removeButtonImage.color = destroyObjectFlag ? redButtonColor : clearButtonColor;
+    }
+
+    public void resetDelete()
+    {
+        destroyObjectFlag = false;
+        removeButtonImage.color = clearButtonColor;
     }
 
     private void SpawnPrefab(Vector3 spawnPosition)
